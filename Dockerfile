@@ -25,7 +25,8 @@ RUN apt-get update && \
     iproute2 \
     wireguard \
     wireguard-tools \
-    dumb-init && \
+    dumb-init \
+    iptables && \
     rm -rf /var/lib/apt/lists/*
 
 # Enable this to run `npm run serve`

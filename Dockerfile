@@ -3,7 +3,9 @@ LABEL maintainer="janwiebe@janwiebe.eu"
 FROM ubuntu:22.04
 
 # Install necessary packages
-RUN apt-get update apt-get install -y nodejs npm
+RUN apt-get update 
+RUN apt-get install -y nodejs npm
+
 # Set the working directory
 WORKDIR /app_build_node_modules
 

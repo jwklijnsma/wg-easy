@@ -1,3 +1,12 @@
+FROM docker.io/library/node:14-alpine@sha256:dc92f36e7cd917816fa2df041d4e9081453366381a00f40398d99e9392e78664 AS build_node_modules
+LABEL maintainer="janwiebe@janwiebe.eu"
+
+# Copy Web UI
+COPY src/ /app/
+WORKDIR /app
+RUN npm ci --production
+
+
 FROM ubuntu:22.04
 LABEL maintainer="janwiebe@janwiebe.eu"
 
@@ -5,17 +14,7 @@ LABEL maintainer="janwiebe@janwiebe.eu"
 RUN apt-get update 
 RUN apt-get install -y nodejs npm
 
-# Set the working directory
-WORKDIR /app_build_node_modules
-
-# Copy the Web UI source code into the container
-COPY src/ .
-
-# Install production dependencies
-RUN npm ci --production
-
-# Copy build result from the previous stage
-COPY /app_build_node_modules /app
+COPY --from=build_node_modules /app /app
 
 # Move node_modules one directory up
 RUN mv /app/node_modules /node_modules

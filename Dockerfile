@@ -1,6 +1,5 @@
-LABEL maintainer="janwiebe@janwiebe.eu"
-# Create a new image with a slim Ubuntu base
 FROM ubuntu:22.04
+LABEL maintainer="janwiebe@janwiebe.eu"
 
 # Install necessary packages
 RUN apt-get update 

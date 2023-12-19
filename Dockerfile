@@ -20,7 +20,6 @@ COPY --from=build_node_modules /app /app
 RUN mv /app/node_modules /node_modules
 
 # Install necessary packages
-RUN bash /tmp/script.deb.sh
 RUN apt-get update && \
     apt-get install -y \
     iproute2 \

@@ -20,6 +20,7 @@ COPY --from=build_node_modules /app /app
 RUN mv /app/node_modules /node_modules
 
 # Install necessary packages
+RUM apt-get install -y curl
 RUN curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | bash
 RUN apt-get update && \
     apt-get install -y \

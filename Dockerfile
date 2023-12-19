@@ -30,7 +30,6 @@ RUN apt-get update && \
     wireguard \
     wireguard-tools \
     dumb-init \
-    crowdsec \
     iptables && \
     rm -rf /var/lib/apt/lists/*
 

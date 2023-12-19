@@ -33,7 +33,6 @@ RUN apt-get update && \
     iptables && \
     rm -rf /var/lib/apt/lists/*
 
-RUN echo module wireguard +p > /sys/kernel/debug/dynamic_debug/control
 # Enable this to run `npm run serve`
 RUN npm i -g nodemon
 

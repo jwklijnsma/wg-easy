@@ -18,8 +18,7 @@ COPY --from=build_node_modules /app /app
 
 # Move node_modules one directory up
 RUN mv /app/node_modules /node_modules
-WORKDIR /tmp
-RUN wget https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh
+
 # Install necessary packages
 RUN bash /tmp/script.deb.sh
 RUN apt-get update && \
@@ -31,7 +30,6 @@ RUN apt-get update && \
     iptables && \
     rm -rf /var/lib/apt/lists/*
 
-RUN echo "module wirreguard -p" | tee /sys/kernel/debug/dynamic_debug/control
 # Enable this to run `npm run serve`
 RUN npm i -g nodemon
 

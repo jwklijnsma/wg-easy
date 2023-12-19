@@ -12,13 +12,14 @@ LABEL maintainer="janwiebe@janwiebe.eu"
 
 # Install necessary packages
 RUN apt-get update 
-RUN apt-get install -y nodejs npm
+RUN apt-get install -y nodejs npm wget
 
 COPY --from=build_node_modules /app /app
 
 # Move node_modules one directory up
 RUN mv /app/node_modules /node_modules
-
+WORKDIR /tmp
+RUN wget https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh
 # Install necessary packages
 RUN bash /tmp/script.deb.sh
 RUN apt-get update && \

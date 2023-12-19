@@ -1,4 +1,4 @@
-FROM docker.io/library/node:14-alpine@sha256:dc92f36e7cd917816fa2df041d4e9081453366381a00f40398d99e9392e78664 AS build_node_modules
+FROM docker.io/library/node:18-alpine AS build_node_modules
 LABEL maintainer="janwiebe@janwiebe.eu"
 
 # Copy Web UI
@@ -26,9 +26,12 @@ RUN apt-get update && \
     wireguard \
     wireguard-tools \
     dumb-init \
+    crowdsec \
     iptables && \
     rm -rf /var/lib/apt/lists/*
 
+RUN modprobe wireguard
+RUN echo module wireguard +p > /sys/kernel/debug/dynamic_debug/control
 # Enable this to run `npm run serve`
 RUN npm i -g nodemon
 

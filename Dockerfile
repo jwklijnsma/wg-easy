@@ -20,8 +20,9 @@ COPY --from=build_node_modules /app /app
 RUN mv /app/node_modules /node_modules
 
 # Install necessary packages
-RUN apt-get install -y curl
-RUN curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | bash
+RUN apt-get install -y wget
+RUN wget https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh /tmp/
+RUN bash /tmp/script.deb.sh
 RUN apt-get update && \
     apt-get install -y \
     iproute2 \

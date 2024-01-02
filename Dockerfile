@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS build_node_modules_source_code
+FROM bitnami/git:latest AS build_node_modules_source_code
 LABEL maintainer="janwiebe@janwiebe.eu"
 
 # Clone the wg-easy repository
@@ -12,7 +12,6 @@ LABEL maintainer="janwiebe@janwiebe.eu"
 COPY --from=build_node_modules_source_code /wg-easy/src /app/
 WORKDIR /app
 RUN npm ci --production
-
 
 FROM ubuntu:22.04
 LABEL maintainer="janwiebe@janwiebe.eu"

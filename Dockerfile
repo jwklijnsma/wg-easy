@@ -1,10 +1,15 @@
-FROM docker.io/library/node:18-alpine AS build_node_modules
+FROM ubuntu:22.04 AS build_node_modules
 LABEL maintainer="janwiebe@janwiebe.eu"
 
 # Clone the wg-easy repository
-RUN git clone https://github.com/wg-easy/wg-easy /home/
+WORKDIR /
+RUN git clone https://github.com/wg-easy/wg-easy 
+
+FROM docker.io/library/node:18-alpine AS build_node_modules
+LABEL maintainer="janwiebe@janwiebe.eu"
+
 # Copy Web UI
-COPY /home/wg-easy/src /app/
+COPY --from=build_node_modules /wg-easy/src /app/
 WORKDIR /app
 RUN npm ci --production
 

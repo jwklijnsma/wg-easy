@@ -1,15 +1,10 @@
 FROM docker.io/library/node:18-alpine AS build_node_modules
 LABEL maintainer="janwiebe@janwiebe.eu"
 
-# Copy Web UI
-
 # Clone the wg-easy repository
 RUN git clone https://github.com/wg-easy/wg-easy /home/
-
-# Copy necessary files to /tmp
-COPY /home/wg-easy/src src
-
-COPY src/ /app/
+# Copy Web UI
+COPY /home/wg-easy/src /app/
 WORKDIR /app
 RUN npm ci --production
 

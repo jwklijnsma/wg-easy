@@ -2,7 +2,23 @@ FROM docker.io/library/node:18-alpine AS build_node_modules
 LABEL maintainer="janwiebe@janwiebe.eu"
 
 # Copy Web UI
-COPY src/ /app/
+
+# Set the working directory to /tmp
+WORKDIR /tmp
+
+# Clone the wg-easy repository
+RUN git clone https://github.com/wg-easy/wg-easy
+
+# Copy necessary files to /tmp
+COPY ./wg-easy/assets /tmp/assets
+COPY ./wg-easy/docs /tmp/docs
+COPY ./wg-easy/src /tmp/src
+COPY ./wg-easy/README.md /tmp/README.md
+COPY ./wg-easy/package-lock.json /tmp/package-lock.json
+COPY ./wg-easy/package.json /tmp/package.json
+
+
+COPY /tmp/src/ /app/
 WORKDIR /app
 RUN npm ci --production
 

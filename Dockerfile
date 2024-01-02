@@ -3,22 +3,18 @@ LABEL maintainer="janwiebe@janwiebe.eu"
 
 # Copy Web UI
 
-# Set the working directory to /tmp
-WORKDIR /tmp
-
 # Clone the wg-easy repository
 RUN git clone https://github.com/wg-easy/wg-easy
 
 # Copy necessary files to /tmp
-COPY ./wg-easy/assets /tmp/assets
-COPY ./wg-easy/docs /tmp/docs
-COPY ./wg-easy/src /tmp/src
-COPY ./wg-easy/README.md /tmp/README.md
-COPY ./wg-easy/package-lock.json /tmp/package-lock.json
-COPY ./wg-easy/package.json /tmp/package.json
+COPY ./wg-easy/assets assets
+COPY ./wg-easy/docs docs
+COPY ./wg-easy/src src
+COPY ./wg-easy/README.md README.md
+COPY ./wg-easy/package-lock.json package-lock.json
+COPY ./wg-easy/package.json package.json
 
-
-COPY /tmp/src/ /app/
+COPY src/ /app/
 WORKDIR /app
 RUN npm ci --production
 

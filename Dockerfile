@@ -7,12 +7,7 @@ LABEL maintainer="janwiebe@janwiebe.eu"
 RUN git clone https://github.com/wg-easy/wg-easy /home/
 
 # Copy necessary files to /tmp
-COPY /home/wg-easy/assets assets
-COPY /home/wg-easy/docs docs
 COPY /home/wg-easy/src src
-COPY /home/wg-easy/README.md README.md
-COPY /home/wg-easy/package-lock.json package-lock.json
-COPY /home/wg-easy/package.json package.json
 
 COPY src/ /app/
 WORKDIR /app

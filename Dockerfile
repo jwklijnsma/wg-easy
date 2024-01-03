@@ -10,7 +10,7 @@ LABEL maintainer="janwiebe@janwiebe.eu"
 
 # Copy Web UI
 COPY --from=build_node_modules_source_code /wg-easy/src/ /app/
-COP
+COPY src/ /app/
 WORKDIR /app
 RUN npm ci --production
 
@@ -18,7 +18,7 @@ FROM ubuntu:22.04
 LABEL maintainer="janwiebe@janwiebe.eu"
 
 # Install necessary packages
-RUN apt-get update 
+RUN apt-get update
 RUN apt-get install -y nodejs npm wget
 
 COPY --from=build_node_modules /app /app

@@ -3,13 +3,14 @@ LABEL maintainer="janwiebe@janwiebe.eu"
 
 # Clone the wg-easy repository
 WORKDIR /
-RUN git clone https://github.com/wg-easy/wg-easy 
+RUN git clone https://github.com/wg-easy/wg-easy
 
 FROM docker.io/library/node:18-alpine AS build_node_modules
 LABEL maintainer="janwiebe@janwiebe.eu"
 
 # Copy Web UI
 COPY --from=build_node_modules_source_code /wg-easy/src/ /app/
+COP
 WORKDIR /app
 RUN npm ci --production
 

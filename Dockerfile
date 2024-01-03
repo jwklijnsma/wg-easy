@@ -9,7 +9,7 @@ FROM docker.io/library/node:18-alpine AS build_node_modules
 LABEL maintainer="janwiebe@janwiebe.eu"
 
 # Copy Web UI
-COPY --from=build_node_modules_source_code /wg-easy/src /app/
+COPY --from=build_node_modules_source_code /wg-easy/src/ /app/
 WORKDIR /app
 RUN npm ci --production
 

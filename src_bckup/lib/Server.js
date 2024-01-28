@@ -1,8 +1,6 @@
 'use strict';
 
 const path = require('path');
-const bcrypt = require('bcryptjs');
-const crypto = require('node:crypto');
 
 const express = require('express');
 const expressSession = require('express-session');
@@ -14,10 +12,8 @@ const WireGuard = require('../services/WireGuard');
 
 const {
   PORT,
-  WEBUI_HOST,
   RELEASE,
   PASSWORD,
-  LANG,
 } = require('../config');
 
 module.exports = class Server {
@@ -29,24 +25,17 @@ module.exports = class Server {
       .use('/', express.static(path.join(__dirname, '..', 'www')))
       .use(express.json())
       .use(expressSession({
-        secret: crypto.randomBytes(256).toString('hex'),
+        secret: String(Math.random()),
         resave: true,
         saveUninitialized: true,
-        cookie: {
-          httpOnly: true,
-        },
       }))
 
       .get('/api/release', (Util.promisify(async () => {
         return RELEASE;
       })))
 
-      .get('/api/lang', (Util.promisify(async () => {
-        return LANG;
-      })))
-
-    // Authentication
-      .get('/api/session', Util.promisify(async (req) => {
+      // Authentication
+      .get('/api/session', Util.promisify(async req => {
         const requiresPassword = !!process.env.PASSWORD;
         const authenticated = requiresPassword
           ? !!(req.session && req.session.authenticated)
@@ -57,7 +46,7 @@ module.exports = class Server {
           authenticated,
         };
       }))
-      .post('/api/session', Util.promisify(async (req) => {
+      .post('/api/session', Util.promisify(async req => {
         const {
           password,
         } = req.body;
@@ -76,7 +65,7 @@ module.exports = class Server {
         debug(`New Session: ${req.session.id}`);
       }))
 
-    // WireGuard
+      // WireGuard
       .use((req, res, next) => {
         if (!PASSWORD) {
           return next();
@@ -86,27 +75,18 @@ module.exports = class Server {
           return next();
         }
 
-        if (req.path.startsWith('/api/') && req.headers['authorization']) {
-          if (bcrypt.compareSync(req.headers['authorization'], bcrypt.hashSync(PASSWORD, 10))) {
-            return next();
-          }
-          return res.status(401).json({
-            error: 'Incorrect Password',
-          });
-        }
-
         return res.status(401).json({
           error: 'Not Logged In',
         });
       })
-      .delete('/api/session', Util.promisify(async (req) => {
+      .delete('/api/session', Util.promisify(async req => {
         const sessionId = req.session.id;
 
         req.session.destroy();
 
         debug(`Deleted Session: ${sessionId}`);
       }))
-      .get('/api/wireguard/client', Util.promisify(async (req) => {
+      .get('/api/wireguard/client', Util.promisify(async req => {
         return WireGuard.getClients();
       }))
       .get('/api/wireguard/client/:clientId/qrcode.svg', Util.promisify(async (req, res) => {
@@ -128,47 +108,35 @@ module.exports = class Server {
         res.header('Content-Type', 'text/plain');
         res.send(config);
       }))
-      .post('/api/wireguard/client', Util.promisify(async (req) => {
+      .post('/api/wireguard/client', Util.promisify(async req => {
         const { name } = req.body;
         return WireGuard.createClient({ name });
       }))
-      .delete('/api/wireguard/client/:clientId', Util.promisify(async (req) => {
+      .delete('/api/wireguard/client/:clientId', Util.promisify(async req => {
         const { clientId } = req.params;
         return WireGuard.deleteClient({ clientId });
       }))
-      .post('/api/wireguard/client/:clientId/enable', Util.promisify(async (req, res) => {
+      .post('/api/wireguard/client/:clientId/enable', Util.promisify(async req => {
         const { clientId } = req.params;
-        if (clientId === '__proto__' || clientId === 'constructor' || clientId === 'prototype') {
-          res.end(403);
-        }
         return WireGuard.enableClient({ clientId });
       }))
-      .post('/api/wireguard/client/:clientId/disable', Util.promisify(async (req, res) => {
+      .post('/api/wireguard/client/:clientId/disable', Util.promisify(async req => {
         const { clientId } = req.params;
-        if (clientId === '__proto__' || clientId === 'constructor' || clientId === 'prototype') {
-          res.end(403);
-        }
         return WireGuard.disableClient({ clientId });
       }))
-      .put('/api/wireguard/client/:clientId/name', Util.promisify(async (req, res) => {
+      .put('/api/wireguard/client/:clientId/name', Util.promisify(async req => {
         const { clientId } = req.params;
-        if (clientId === '__proto__' || clientId === 'constructor' || clientId === 'prototype') {
-          res.end(403);
-        }
         const { name } = req.body;
         return WireGuard.updateClientName({ clientId, name });
       }))
-      .put('/api/wireguard/client/:clientId/address', Util.promisify(async (req, res) => {
+      .put('/api/wireguard/client/:clientId/address', Util.promisify(async req => {
         const { clientId } = req.params;
-        if (clientId === '__proto__' || clientId === 'constructor' || clientId === 'prototype') {
-          res.end(403);
-        }
         const { address } = req.body;
         return WireGuard.updateClientAddress({ clientId, address });
       }))
 
-      .listen(PORT, WEBUI_HOST, () => {
-        debug(`Listening on http://${WEBUI_HOST}:${PORT}`);
+      .listen(PORT, () => {
+        debug(`Listening on http://0.0.0.0:${PORT}`);
       });
   }
 

@@ -5,16 +5,13 @@ const childProcess = require('child_process');
 module.exports = class Util {
 
   static isValidIPv4(str) {
+    // Strict: exactly four decimal octets 0-255 and nothing else. parseInt()
+    // alone accepted trailing text ("10.8.0.2\nPostUp = ..."), which ends up
+    // in wg0.conf and is run by wg-quick as root.
+    if (typeof str !== 'string') return false;
     const blocks = str.split('.');
     if (blocks.length !== 4) return false;
-
-    for (let value of blocks) {
-      value = parseInt(value, 10);
-      if (Number.isNaN(value)) return false;
-      if (value < 0 || value > 255) return false;
-    }
-
-    return true;
+    return blocks.every(block => /^(0|[1-9][0-9]{0,2})$/.test(block) && Number(block) <= 255);
   }
 
   static promisify(fn) {
